@@ -1,0 +1,19 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    {% if option == 'following' %}
+        <h2>Following</h2>
+        <ul>
+            {% for person in users %}
+                <li>{{ person.followee }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Followers</h2>
+        <ul>
+            {% for person in users %}
+                <li>{{ person.follower }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

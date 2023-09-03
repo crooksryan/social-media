@@ -1,0 +1,56 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    {% if user.is_authenticated %}
+    <h3>Make a Post</h3>
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input class="form-control" type="text" name="post-content" placeholder="Type here" autocomplete="off">
+        </div>
+        <input class="btn btn-primary" type="submit" value="Post">
+    </form>
+    {% endif %}
+
+    {% if posts %}
+        <ul class="post-list">
+            {% for post in posts %}
+            <li class="post" data-postID="{{ post.id }}">
+                <h4><a href="{% url 'profile' id=post.user %}">{{ post.user }}</a></h4>
+
+                <p class="content">{{ post.content }}</p>
+
+                <textarea class="edit-area" hidden></textarea>
+
+                <p><i>{{ post.time }}</i></p>
+                
+                <form action="{% url 'likes' %}" class="like" method="post">
+                    {% csrf_token %}
+                    <button class="like-btn">Likes: {{ post.likes }}</button>
+                </form>
+                {% if post.user == user.username %}
+                    <button class="edit-btn">Edit</button>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if posts.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ posts.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+                </span>
+
+                {% if posts.has_next %}
+                    <a href="?page={{ posts.next_page_number }}">next</a>
+                    <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+{% endblock %}
